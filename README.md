@@ -1,6 +1,6 @@
 # rammerhead
 
-> proxy based on testcafe-hammerhead (password is `sharkie4life`)
+> proxy based on testcafe-hammerhead
 
 Demo link: https://demo-opensource.rammerhead.org
 
@@ -30,11 +30,11 @@ The proxy allows users to create a "session". When they access their session, th
 The interactive demo UI has been removed. The root path is now a query-param entry point:
 
 ```
-GET /?url=<target>&password=<password>
+GET /?url=<target>
 ```
 
 - `url` — the site to proxy. A full URL or a bare domain (`example.com/`); `https://` is assumed when no scheme is given.
-- `password` — required when `password` is set in [src/config.js](src/config.js); it must match that value.
+- `password` — only required when `password` is set in [src/config.js](src/config.js). It is `null` by default, so no password is needed.
 
 On success the endpoint creates a **new, isolated session** (URL shuffling enabled, not locked to your IP) and responds with a **302 redirect** to `/<sessionId>/<targetUrl>`, so the link can be shared and used from any device.
 
@@ -42,16 +42,16 @@ Opening the root path with **no** `url` returns a small "Rammerhead proxy is up.
 
 | Status | Body | Cause |
 | ------ | ---- | ----- |
-| 401 | `{"error":"bad password"}` | missing or wrong `password` |
+| 401 | `{"error":"bad password"}` | `password` set in [src/config.js](src/config.js) and missing/wrong |
 | 400 | `{"error":"invalid url"}` | `url` is not a valid http/https URL |
 
 Example:
 
 ```bash
-curl -i "http://127.0.0.1:8080/?url=example.com&password=sharkie4life"
+curl -i "http://127.0.0.1:8080/?url=example.com"
 ```
 
-> Note: putting the password in the query string means it can appear in server access logs and browser history. Change `config.password` or front the server with an auth layer if that matters.
+> Note: if you set a password, it goes in the query string, so it can appear in server access logs and browser history. Leave `config.password` as `null` (the default) to disable the check, or front the server with an auth layer if that matters.
 
 ## Installing and running
 
@@ -70,7 +70,7 @@ This repo includes a [render.yaml](render.yaml) Blueprint and a root [config.js]
 1. Push the repo to GitHub/GitLab.
 2. Render → **New +** → **Blueprint** and select the repo (or **Web Service** and configure it by hand).
 3. Confirm: Runtime **Node**, Plan **Free**, Build Command `npm install && npm run build`, Start Command `npm start`, Health Check Path `/needpassword`.
-4. Deploy. The public URL is `https://<name>.onrender.com`; append your params: `https://<name>.onrender.com/?url=example.com&password=sharkie4life`.
+4. Deploy. The public URL is `https://<name>.onrender.com`; append your params: `https://<name>.onrender.com/?url=example.com`.
 
 **Why the config override exists** ([config.js](config.js), loaded by [src/config.js](src/config.js) when present):
 
@@ -85,7 +85,7 @@ The override only changes the port/worker settings when `PORT` is a positive num
 
 - Free services **spin down after 15 minutes** of inactivity and take ~1 minute to wake, so the first request after idle is slow.
 - The filesystem is **ephemeral**: `sessions/` and `cache-js/` are wiped on every deploy, restart, or spin-down, so saved logins do not survive. Persistent Disks require a paid plan.
-- The session password in [src/config.js](src/config.js) is public in the repo. Anyone who finds it can create sessions on your deploy; change it before exposing the service.
+- The password check is disabled by default (`config.password = null`), so anyone can create sessions on your deploy. Set a password in [src/config.js](src/config.js) or front the service with an auth layer if you want to restrict access.
 
 ## Discord server
 

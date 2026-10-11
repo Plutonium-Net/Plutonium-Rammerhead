@@ -15,7 +15,7 @@ const serverUpPage = `<!DOCTYPE html>
 </head>
 <body>
     <h1>Rammerhead proxy is up.</h1>
-    <p>Append <code>?url=&lt;target&gt;&amp;password=&lt;password&gt;</code> to proxy a site.</p>
+    <p>Append <code>?url=&lt;target&gt;</code> to proxy a site.</p>
 </body>
 </html>`;
 
