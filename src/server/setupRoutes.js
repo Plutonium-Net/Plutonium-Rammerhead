@@ -27,6 +27,39 @@ module.exports = function setupRoutes(proxyServer, sessionStore, logger) {
             res.end('Ok');
         });
     }
+    // query-param entry point: /?url=<target>&password=<pwd>
+    // validates, creates a fresh session, and redirects into the proxy
+    proxyServer.GET('/', (req, res) => {
+        const { url, password } = new URLPath(req.url).getParams();
+
+        if (config.password && password !== config.password) {
+            return httpResponse.json(logger, req, res, config.getIP(req), 'bad password', 401);
+        }
+        if (!url) {
+            return httpResponse.json(logger, req, res, config.getIP(req), 'must specify url', 400);
+        }
+
+        // accept bare domains like example.com by defaulting the scheme to https
+        const withScheme = /^https?:\/\//i.test(url) ? url : 'https://' + url;
+        let target;
+        try {
+            target = new URL(withScheme);
+        } catch (e) {
+            return httpResponse.json(logger, req, res, config.getIP(req), 'invalid url', 400);
+        }
+        if ((target.protocol !== 'http:' && target.protocol !== 'https:') || !target.hostname) {
+            return httpResponse.json(logger, req, res, config.getIP(req), 'invalid url', 400);
+        }
+
+        const id = generateId();
+        // fresh session, URL shuffling enabled by default. restrictIP is intentionally
+        // left unset so the resulting link is not locked to the requester's IP.
+        const session = new RammerheadSession();
+        sessionStore.addSerializedSession(id, session.serializeSession());
+
+        res.writeHead(302, { location: `/${id}/${target.href}` });
+        res.end();
+    });
     proxyServer.GET('/needpassword', (req, res) => {
         res.end(config.password ? 'true' : 'false');
     });

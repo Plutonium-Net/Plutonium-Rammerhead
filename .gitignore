@@ -1,1 +1,36 @@
+# dependencies
+node_modules/
+
+# local env / secrets
+.env
+.env.*
+!.env.example
+
+# generated client bundles (built by src/build.js)
+src/client/hammerhead.js
+src/client/hammerhead.min.js
+src/client/worker-hammerhead.js
+src/client/worker-hammerhead.min.js
+src/client/transport-worker.js
+src/client/transport-worker.min.js
+src/client/rammerhead.min.js
+
+# runtime data
+cache-js/*
+!cache-js/.gitkeep
+sessions/*
+!sessions/.gitkeep
+
+# logs
+*.log
+npm-debug.log*
+yarn-error.log
+pnpm-debug.log*
+
+# editor / os
+.DS_Store
+Thumbs.db
+*.swp
+
+# tooling
 .freebuff/
