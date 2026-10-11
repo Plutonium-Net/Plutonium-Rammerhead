@@ -7,5 +7,5 @@ services:
     plan: free
     buildCommand: npm install && npm run build
     startCommand: npm start
-    # /returns 200; the root path now returns 401 (JSON) without params.
+    # stable endpoint that always returns 200
     healthCheckPath: /needpassword

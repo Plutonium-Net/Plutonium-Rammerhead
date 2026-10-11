@@ -5,6 +5,20 @@ const config = require('../config');
 const StrShuffler = require('../util/StrShuffler');
 const RammerheadSession = require('../classes/RammerheadSession');
 
+// shown when the root path is opened without a target url
+const serverUpPage = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Rammerhead Proxy</title>
+</head>
+<body>
+    <h1>Rammerhead proxy is up.</h1>
+    <p>Append <code>?url=&lt;target&gt;&amp;password=&lt;password&gt;</code> to proxy a site.</p>
+</body>
+</html>`;
+
 /**
  *
  * @param {import('../classes/RammerheadProxy')} proxyServer
@@ -32,11 +46,14 @@ module.exports = function setupRoutes(proxyServer, sessionStore, logger) {
     proxyServer.GET('/', (req, res) => {
         const { url, password } = new URLPath(req.url).getParams();
 
+        // no target given: just confirm the server is alive
+        if (!url) {
+            res.writeHead(200, { 'content-type': 'text/html' });
+            res.end(serverUpPage);
+            return;
+        }
         if (config.password && password !== config.password) {
             return httpResponse.json(logger, req, res, config.getIP(req), 'bad password', 401);
-        }
-        if (!url) {
-            return httpResponse.json(logger, req, res, config.getIP(req), 'must specify url', 400);
         }
 
         // accept bare domains like example.com by defaulting the scheme to https

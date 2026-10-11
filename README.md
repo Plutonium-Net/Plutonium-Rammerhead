@@ -38,12 +38,11 @@ GET /?url=<target>&password=<password>
 
 On success the endpoint creates a **new, isolated session** (URL shuffling enabled, not locked to your IP) and responds with a **302 redirect** to `/<sessionId>/<targetUrl>`, so the link can be shared and used from any device.
 
-Errors are JSON with a real HTTP status:
+Opening the root path with **no** `url` returns a small "Rammerhead proxy is up." HTML page. Once a `url` is present, errors are JSON with a real HTTP status:
 
 | Status | Body | Cause |
 | ------ | ---- | ----- |
 | 401 | `{"error":"bad password"}` | missing or wrong `password` |
-| 400 | `{"error":"must specify url"}` | no `url` parameter |
 | 400 | `{"error":"invalid url"}` | `url` is not a valid http/https URL |
 
 Example:
