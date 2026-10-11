@@ -62,6 +62,32 @@ After, configure your settings in [src/config.js](src/config.js). If you wish to
 
 Finally run the following to start rammerhead: `node src/server.js`
 
+## Deploying to Render
+
+This repo includes a [render.yaml](render.yaml) Blueprint and a root [config.js](config.js) tuned for Render.
+
+**Dashboard steps:**
+
+1. Push the repo to GitHub/GitLab.
+2. Render → **New +** → **Blueprint** and select the repo (or **Web Service** and configure it by hand).
+3. Confirm: Runtime **Node**, Plan **Free**, Build Command `npm install && npm run build`, Start Command `npm start`, Health Check Path `/needpassword`.
+4. Deploy. The public URL is `https://<name>.onrender.com`; append your params: `https://<name>.onrender.com/?url=example.com&password=sharkie4life`.
+
+**Why the config override exists** ([config.js](config.js), loaded by [src/config.js](src/config.js) when present):
+
+- Binds `0.0.0.0` and reads `PORT` (Render's default is `10000`).
+- Runs in single-port mode (`crossDomainPort: null`) because Render exposes one HTTP port. Cross-origin requests are not perfectly simulated.
+- Rewrites proxied URLs to the public host/protocol from the request (`X-Forwarded-Proto` / `Host`) instead of `localhost`.
+- Uses `X-Forwarded-For` for the client IP and runs a single process to fit small instances.
+
+The override only changes the port/worker settings when `PORT` is a positive number (Render always sets one), so local `node src/server.js` keeps its two-port, multi-process behavior. Node is pinned to 22.17.1 via [.node-version](.node-version).
+
+**Free-tier caveats:**
+
+- Free services **spin down after 15 minutes** of inactivity and take ~1 minute to wake, so the first request after idle is slow.
+- The filesystem is **ephemeral**: `sessions/` and `cache-js/` are wiped on every deploy, restart, or spin-down, so saved logins do not survive. Persistent Disks require a paid plan.
+- The session password in [src/config.js](src/config.js) is public in the repo. Anyone who finds it can create sessions on your deploy; change it before exposing the service.
+
 ## Discord server
 
 For any user-help non-issue related questions, especially pertaining to Rammerhead Browser, please ask them here: [Rammerhead Support Server](https://discord.gg/VNT4E7gN5Y).
