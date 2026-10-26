@@ -80,13 +80,13 @@ const landingPage = (host) => `<!DOCTYPE html>
     display: grid;
     align-content: center;
     justify-items: center;
-    gap: clamp(8px, 1.1vh, 12px);
+    gap: clamp(7px, 1vh, 11px);
     /* background.png is 2:1 and its Plutonium wordmark fills the lower third;
        its first lit pixel is at 34.8% of the image height. Under cover the
        image is max(50vw, 100svh) tall, so that band is reserved: the cards sit
        above the brand instead of on top of it. */
     padding:
-      clamp(28px, 6vh, 80px)
+      clamp(24px, 5vh, 72px)
       clamp(18px, 2vw, 28px)
       calc(max(50vw, 100svh) * 0.348 + 4px)
       clamp(18px, 2vw, 28px);
@@ -94,7 +94,7 @@ const landingPage = (host) => `<!DOCTYPE html>
 
   .card {
     width: min(100%, 1160px);
-    padding: clamp(12px, 2.2vh, 24px);
+    padding: clamp(11px, 2vh, 22px);
     background: var(--card);
     border: 1px solid var(--line);
     border-radius: 22px;
@@ -115,20 +115,20 @@ const landingPage = (host) => `<!DOCTYPE html>
   }
   .card__mark {
     flex: none;
-    width: clamp(38px, 5.2vh, 58px);
+    width: clamp(34px, 4.6vh, 56px);
     height: auto;
     filter: drop-shadow(0 0 20px rgba(232, 23, 93, 0.3));
   }
   .card__eyebrow {
     font-family: var(--mono);
-    font-size: clamp(0.72rem, 1.7vh, 0.95rem);
+    font-size: clamp(0.68rem, 1.55vh, 0.9rem);
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: rgba(232, 23, 93, 0.95);
-    margin-bottom: clamp(2px, 0.6vh, 6px);
+    margin-bottom: clamp(1px, 0.5vh, 5px);
   }
   .card__title {
-    font-size: clamp(1.45rem, 5.2vh, 3.2rem);
+    font-size: clamp(1.35rem, 4.5vh, 3rem);
     font-weight: 650;
     letter-spacing: -0.03em;
     line-height: 1.05;
@@ -138,14 +138,14 @@ const landingPage = (host) => `<!DOCTYPE html>
     display: flex;
     align-items: stretch;
     gap: clamp(8px, 1vw, 12px);
-    margin-top: clamp(10px, 1.8vh, 16px);
-    padding-top: clamp(10px, 1.7vh, 16px);
+    margin-top: clamp(8px, 1.4vh, 14px);
+    padding-top: clamp(8px, 1.3vh, 14px);
     border-top: 1px solid rgba(255, 255, 255, 0.07);
   }
   .search__input {
     flex: 1 1 220px;
     min-width: 0;
-    height: clamp(38px, 5.4vh, 50px);
+    height: clamp(36px, 5vh, 48px);
     padding: 0 clamp(12px, 1.4vw, 18px);
     font: inherit;
     font-size: clamp(0.85rem, 1.9vh, 1rem);
@@ -166,7 +166,7 @@ const landingPage = (host) => `<!DOCTYPE html>
 
   .search__btn {
     flex: none;
-    height: clamp(38px, 5.4vh, 50px);
+    height: clamp(36px, 5vh, 48px);
     padding: 0 clamp(16px, 2vw, 26px);
     font: inherit;
     font-size: clamp(0.85rem, 1.9vh, 1rem);
@@ -280,7 +280,7 @@ const landingPage = (host) => `<!DOCTYPE html>
     margin-inline: auto;
     text-align: center;
     color: var(--muted);
-    font-size: clamp(0.82rem, 1.9vh, 1rem);
+    font-size: clamp(0.8rem, 1.85vh, 1rem);
     line-height: 1.7;
   }
   .card__desc strong { color: rgba(245, 245, 247, 0.88); font-weight: 550; }
@@ -379,10 +379,8 @@ const landingPage = (host) => `<!DOCTYPE html>
 
   <section class="card card--desc">
     <p class="card__desc">
-    <strong>Rammerhead</strong> is a session-based web proxy built on testcafe-hammerhead. Enter any address above and
-    you land in a fresh, isolated session whose cookies and localStorage follow the link, so the same URL keeps your
-    logins on another device. Each session can optionally be routed through your own HTTP proxy, and everything is
-    served from this host.
+    <strong>Rammerhead</strong> is a session-based web proxy built on testcafe-hammerhead. Every address opens in a
+    fresh, isolated session whose cookies and localStorage follow the link, so it keeps your logins on any device.
     </p>
   </section>
 </main>
