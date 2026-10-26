@@ -12,7 +12,9 @@ module.exports = {
     bindingAddress: '127.0.0.1',
     port: 8080,
     crossDomainPort: 8081,
-    publicDir: null, // the demo UI was removed; / is now a query-param proxy endpoint (see src/server/setupRoutes.js)
+    // static files for the root search screen (background.png, logo.png, favicon.png).
+    // / itself is still the query-param proxy endpoint (see src/server/setupRoutes.js)
+    publicDir: path.join(__dirname, '../public'),
 
     // enable or disable multithreading
     enableWorkers,

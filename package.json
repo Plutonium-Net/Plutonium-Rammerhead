@@ -45,6 +45,7 @@
   },
   "files": [
     "src/*",
+    "public/*",
     "CHANGELOG.md",
     "package.json",
     "README.md"

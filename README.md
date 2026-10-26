@@ -38,7 +38,7 @@ GET /?url=<target>
 
 On success the endpoint creates a **new, isolated session** (URL shuffling enabled, not locked to your IP) and responds with a **302 redirect** to `/<sessionId>/<targetUrl>`, so the link can be shared and used from any device.
 
-Opening the root path with **no** `url` returns a small "Rammerhead proxy is up." HTML page. Once a `url` is present, errors are JSON with a real HTTP status:
+Opening the root path with **no** `url` returns the search screen: a branded page with a target-address field and a status card fed by `/healthz`. That search form submits to `/?url=`, so it is the same entry point as the query param. Once a `url` is present, errors are JSON with a real HTTP status:
 
 | Status | Body | Cause |
 | ------ | ---- | ----- |

@@ -4,20 +4,7 @@ const httpResponse = require('../util/httpResponse');
 const config = require('../config');
 const StrShuffler = require('../util/StrShuffler');
 const RammerheadSession = require('../classes/RammerheadSession');
-
-// shown when the root path is opened without a target url
-const serverUpPage = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Rammerhead Proxy</title>
-</head>
-<body>
-    <h1>Rammerhead proxy is up.</h1>
-    <p>Append <code>?url=&lt;target&gt;</code> to proxy a site.</p>
-</body>
-</html>`;
+const { landingPage, healthReport } = require('./landingPage');
 
 /**
  *
@@ -46,10 +33,10 @@ module.exports = function setupRoutes(proxyServer, sessionStore, logger) {
     proxyServer.GET('/', (req, res) => {
         const { url, password } = new URLPath(req.url).getParams();
 
-        // no target given: just confirm the server is alive
+        // no target given: render the search screen
         if (!url) {
-            res.writeHead(200, { 'content-type': 'text/html' });
-            res.end(serverUpPage);
+            res.writeHead(200, { 'content-type': 'text/html', 'cache-control': 'no-store' });
+            res.end(landingPage(req.headers.host || 'localhost'));
             return;
         }
         if (config.password && password !== config.password) {
@@ -76,6 +63,12 @@ module.exports = function setupRoutes(proxyServer, sessionStore, logger) {
 
         res.writeHead(302, { location: `/${id}/${target.href}` });
         res.end();
+    });
+    // feeds the status card on the search screen; deliberately not password
+    // gated, so a monitor can ask the same question the page asks
+    proxyServer.GET('/healthz', (req, res) => {
+        res.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' });
+        res.end(JSON.stringify(healthReport()));
     });
     proxyServer.GET('/needpassword', (req, res) => {
         res.end(config.password ? 'true' : 'false');
